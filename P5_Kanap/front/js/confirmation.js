@@ -1,15 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const orderNumberElement = document.getElementById('orderId');
-  
-  // Générer un numéro de commande (ici, je génère un nombre aléatoire à 8 chiffres)
-  const orderNumber = generateOrderNumber();
-  
-  // Afficher le numéro de commande sur la page
-  orderNumberElement.textContent = orderNumber;
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('orderId');
+    const orderNumberElement = document.getElementById('orderNumber');
+
+    if (orderId) {
+        orderNumberElement.textContent = orderId;
+    } else {
+        orderNumberElement.textContent = "Numéro de commande non disponible";
+    }
 });
-
-// Fonction pour générer un numéro de commande (exemple avec un nombre aléatoire à 8 chiffres)
-function generateOrderNumber() {
-  return Math.floor(Math.random() * 90000000) + 10000000;
-}
-

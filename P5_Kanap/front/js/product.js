@@ -1,10 +1,26 @@
+// Données du produit.
 let productData = null;
 
+/**
+ * Récupère les paramètres de l'URL.
+ * @type {string}
+ */
 const queryParams = window.location.search;
 
+
+/**
+ * Analyse les paramètres de l'URL.
+ * @type {URLSearchParams}
+ */
 const urlParams = new URLSearchParams(queryParams);
+
+/**
+ * Récupère l'ID du produit depuis les paramètres de l'URL.
+ * @type {string|null}
+ */
 const productId = urlParams.get("id");
 
+// Récupère les détails du produit depuis l'API.
 fetch(`http://localhost:3000/api/products/${productId}`)
   .then((response) => {
     if (response.ok) {
@@ -14,13 +30,18 @@ fetch(`http://localhost:3000/api/products/${productId}`)
     }
   })
   .then((data) => {
-    productData = data; // Mettre à jour productData avec les données du produit
-    showProductDetails(productData); // Appelez la fonction en utilisant productData
+    // Met à jour productData avec les données du produit.
+    productData = data; 
+    showProductDetails(productData); // Appeler la fonction en utilisant productData
   })
   .catch((err) => {
     console.error("Erreur lors de la récupération des données :", err);
   });
 
+  /**
+ * Affiche les détails du produit.
+ * @param {Object} product - Les détails du produit.
+ */
 function showProductDetails(product) {
   showProductImage(product);
   showProductName(product);
@@ -29,26 +50,47 @@ function showProductDetails(product) {
   chooseProductColor(product);
 }
 
+/**
+ * Affiche l'image du produit.
+ * @param {Object} product - Les détails du produit.
+ */
 function showProductImage(product) {
   const itemImg = document.querySelector(".item__img");
   itemImg.innerHTML = `<img src="${product.imageUrl}" alt="${product.altTxt}">`;
 }
 
+
+/**
+ * Affiche le nom du produit.
+ * @param {Object} product - Les détails du produit.
+ */
 function showProductName(product) {
   const title = document.querySelector("#title");
   title.innerText = product.name;
 }
 
+/**
+ * Affiche le prix du produit.
+ * @param {Object} product - Les détails du produit.
+ */
 function showProductPrice(product) {
   const price = document.querySelector("#price");
   price.textContent = product.price;
 }
 
+/**
+ * Affiche la description du produit.
+ * @param {Object} product - Les détails du produit.
+ */
 function showProductDescription(product) {
   const description = document.querySelector("#description");
   description.textContent = product.description;
 }
 
+/**
+ * Permet de choisir la couleur du produit.
+ * @param {Object} product - Les détails du produit.
+ */
 function chooseProductColor(product) {
   const colorsSelect = document.querySelector("#colors"); // Utiliser le sélecteur correct
 
@@ -71,10 +113,15 @@ function chooseProductColor(product) {
   });
 }
 
-// Récupération du bouton "Ajouter au panier"
+/**
+ * Récupère le bouton "Ajouter au panier".
+ * @type {HTMLElement}
+ */
 const addToCartButton = document.querySelector("#addToCart");
 
-// Gestionnaire d'événement pour le bouton "Ajouter au panier"
+/**
+ * Gestionnaire d'événement pour le bouton "Ajouter au panier".
+ */
 addToCartButton.addEventListener("click", () => {
   const selectedColor = document.querySelector("#colors").value;
   const selectedQuantity = parseInt(document.querySelector("#quantity").value);
@@ -84,7 +131,7 @@ addToCartButton.addEventListener("click", () => {
     return;
   }
 
-  // Récupérez les détails du produit depuis productData (chargé depuis l'API)
+  // Récupérer les détails du produit depuis productData (chargé depuis l'API)
   const productDetails = {
     productId: productData._id, // Assurez-vous que la clé correspond au nom utilisé dans votre panier
     name: productData.name,
@@ -93,12 +140,18 @@ addToCartButton.addEventListener("click", () => {
     price: productData.price,
   };
 
-  // Ajoutez le produit au panier
+  // Ajouter le produit au panier
   addToCart(productDetails, selectedColor, selectedQuantity);
 
   console.log("Produit ajouté au panier :", productDetails);
 });
 
+/**
+ * Ajoute un produit au panier.
+ * @param {Object} product - Les détails du produit.
+ * @param {string} color - La couleur du produit.
+ * @param {number} quantity - La quantité du produit.
+ */
 function addToCart(product, color, quantity) {
   const cartItem = {
     product: product,
@@ -106,13 +159,13 @@ function addToCart(product, color, quantity) {
     quantity: quantity
   };
 
-  // Récupérez le panier depuis le localStorage s'il existe
+  // Récupérer le panier depuis le localStorage s'il existe
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-  // Ajoutez le nouvel article au panier
+  // Ajouter le nouvel article au panier
   cart.push(cartItem);
 
-  // Enregistrez le panier mis à jour dans le localStorage
+  // Enregistrer le panier mis à jour dans le localStorage
   localStorage.setItem('cart', JSON.stringify(cart));
 
   console.log('Produit ajouté au panier :', cartItem);
